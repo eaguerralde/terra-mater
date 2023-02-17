@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,7 +17,7 @@ export class UsersService {
       return await this.userRepository.save(createUserDto)
     }
     catch (ex) {
-      throw new Error(`create error: ${ex.message}`);
+      throw new HttpException(`create error: ${ex.message}`, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -26,7 +26,7 @@ export class UsersService {
       return await this.userRepository.find()
     }
     catch (ex) {
-      throw new Error(`find error: ${ex.message}`);
+      throw new HttpException(`find error: ${ex.message}`, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -35,7 +35,7 @@ export class UsersService {
       return this.userRepository.findOneBy({ id });
     }
     catch (ex) {
-      throw new Error(`findOne error: ${ex.message}`);
+      throw new HttpException(`findOne error: ${ex.message}`, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -45,11 +45,11 @@ export class UsersService {
     try {
       const foundRecord = await this.userRepository.findOneBy({ id });
       if (!foundRecord)
-        throw new Error(`Error during update, item not found => id: ${id}}`);
+        throw new HttpException(`Error during update, item not found => id: ${id}}`, HttpStatus.BAD_REQUEST);
       return this.userRepository.save(Object.assign(updateUserDto, { id }));
     }
     catch (ex) {
-      throw new Error(`update error: ${ex.message}`);
+      throw new HttpException(`update error: ${ex.message}`, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -59,11 +59,11 @@ export class UsersService {
     try {
       const foundRecord = await this.userRepository.findOneBy({ id });
       if (!foundRecord)
-        throw new Error(`Error during remove, item not found => id: ${id}`);
+        throw new HttpException(`Error during remove, item not found => id: ${id}`, HttpStatus.BAD_REQUEST);
       return  await this.userRepository.remove(foundRecord);
     }
     catch (ex) {
-      throw new Error(`delete error: ${ex.message}`);
+      throw new HttpException(`delete error: ${ex.message}`, HttpStatus.BAD_REQUEST);
     }
   }
 }

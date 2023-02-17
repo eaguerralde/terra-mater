@@ -12,23 +12,58 @@ export class UsersService {
     private readonly userRepository: Repository<User>
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  public async create(createUserDto: CreateUserDto): Promise<User> {
+    try {
+      return await this.userRepository.save(createUserDto)
+    }
+    catch (ex) {
+      throw new Error(`create error: ${ex.message}`);
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  public async findAll(): Promise<User[]> {
+    try {
+      return await this.userRepository.find()
+    }
+    catch (ex) {
+      throw new Error(`find error: ${ex.message}`);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  public async findOne(id: number): Promise<User> {
+    try {
+      return this.userRepository.findOneBy({ id });
+    }
+    catch (ex) {
+      throw new Error(`findOne error: ${ex.message}`);
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  public async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    if (!id)
+      throw new Error(`update error: id is empty`);
+    try {
+      const foundRecord = await this.userRepository.findOneBy({ id });
+      if (!foundRecord)
+        throw new Error(`Error during update, item not found => id: ${id}}`);
+      return this.userRepository.save(Object.assign(updateUserDto, { id }));
+    }
+    catch (ex) {
+      throw new Error(`update error: ${ex.message}`);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  public async remove(id: number): Promise<User> {
+    if (!id)
+      throw new Error(`delete error: id is empty`);
+    try {
+      const foundRecord = await this.userRepository.findOneBy({ id });
+      if (!foundRecord)
+        throw new Error(`Error during remove, item not found => id: ${id}`);
+      return  await this.userRepository.remove(foundRecord);
+    }
+    catch (ex) {
+      throw new Error(`delete error: ${ex.message}`);
+    }
   }
 }

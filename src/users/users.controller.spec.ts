@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity'
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -20,13 +20,13 @@ describe('UsersController', () => {
       providers: [
         {
           provide: UsersService,
-          useFactory: () => ({ 
+          useFactory: () => ({
             findAll: jest.fn(() => Promise.resolve(userDataMock)),
             findOne: jest.fn(() => Promise.resolve(userDataMock[0])),
             create: jest.fn(() => Promise.resolve(userDataMock[0])),
             update: jest.fn(() => Promise.resolve(userDataMock[0])),
             remove: jest.fn(() => Promise.resolve(userDataMock[0])),
-          })
+          }),
         },
       ],
     }).compile();
@@ -43,7 +43,7 @@ describe('UsersController', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', ()=> {
+  describe('create', () => {
     it('should call usersService.findAll correctly', async () => {
       const bodyMock: CreateUserDto = new CreateUserDto();
       await controller.create(bodyMock);
@@ -54,15 +54,15 @@ describe('UsersController', () => {
 
     it('should return the newly created User correctly', async () => {
       const bodyMock: CreateUserDto = new CreateUserDto();
-      jest.spyOn(service,'create');
-      
+      jest.spyOn(service, 'create');
+
       const result: User | undefined = await controller.create(bodyMock);
 
       expect(result).toEqual(userDataMock[0]);
     });
   });
 
-  describe('findAll', ()=> {
+  describe('findAll', () => {
     it('should call usersService.findAll correctly', async () => {
       await controller.findAll();
 
@@ -76,7 +76,7 @@ describe('UsersController', () => {
     });
   });
 
-  describe('findOne', ()=> {
+  describe('findOne', () => {
     it('should call usersService.findAll correctly', async () => {
       await controller.findOne('1');
 
@@ -91,7 +91,7 @@ describe('UsersController', () => {
     });
   });
 
-  describe('update', ()=> {
+  describe('update', () => {
     it('should call usersService.findAll correctly', async () => {
       const userDataUpdateMock: UpdateUserDto = new UpdateUserDto();
       await controller.update('1', userDataUpdateMock);
@@ -102,13 +102,16 @@ describe('UsersController', () => {
 
     it('should return the updated User correctly', async () => {
       const userDataUpdateMock: UpdateUserDto = new UpdateUserDto();
-      const result: User | undefined = await controller.update('1', userDataUpdateMock);
+      const result: User | undefined = await controller.update(
+        '1',
+        userDataUpdateMock,
+      );
 
       expect(result).toEqual(userDataMock[0]);
     });
   });
 
-  describe('delete', ()=> {
+  describe('delete', () => {
     it('should call usersService.delete correctly', async () => {
       await controller.remove('1');
 

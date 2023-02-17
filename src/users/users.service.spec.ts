@@ -21,15 +21,15 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
-        { 
+        {
           provide: USER_REPOSITORY_TOKEN,
-          useFactory: () => ({ 
+          useFactory: () => ({
             find: jest.fn(() => Promise.resolve(userDataMock)),
             findOneBy: jest.fn(() => Promise.resolve(userDataMock[0])),
             save: jest.fn(() => Promise.resolve(userDataMock[0])),
             remove: jest.fn(() => Promise.resolve(userDataMock[0])),
-          })
-        }
+          }),
+        },
       ],
     }).compile();
 
@@ -47,43 +47,44 @@ describe('UsersService', () => {
 
   describe('create()', () => {
     it('when repository.save fails, should throw an error', async () => {
-      const plantData = new CreateUserDto
-      jest.spyOn(repository, 'save')
-      .mockImplementationOnce(() => {throw new Error('Save error reason')});
+      const plantData = new CreateUserDto();
+      jest.spyOn(repository, 'save').mockImplementationOnce(() => {
+        throw new Error('Save error reason');
+      });
 
       try {
-        await service.create({ name: 'New User'});
+        await service.create({ name: 'New User' });
       } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        expect(error.message).toBe('create error: Save error reason')
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('create error: Save error reason');
       }
     });
 
-    it('should call userRepository.save() correctly', async () =>{
-      jest.spyOn(repository, 'save')
+    it('should call userRepository.save() correctly', async () => {
+      jest.spyOn(repository, 'save');
 
-      await service.create({ name: 'New User'});
+      await service.create({ name: 'New User' });
 
-      expect(repository.save).toHaveBeenCalledWith({ name: 'New User'});
+      expect(repository.save).toHaveBeenCalledWith({ name: 'New User' });
     });
 
-    it('should return a record correctly', async () =>{
-      const result = await service.create({ name: 'New User'});
+    it('should return a record correctly', async () => {
+      const result = await service.create({ name: 'New User' });
 
       expect(result).toBe(userDataMock[0]);
     });
   });
 
   describe('findAll()', () => {
-    it('Should call userRepository.find() correctly', async () =>{ 
+    it('Should call userRepository.find() correctly', async () => {
       await service.findAll();
 
       expect(repository.find).toHaveBeenCalledTimes(1);
-    })
+    });
   });
 
   describe('findOne()', () => {
-    it('Should call userRepository.findOneBy() correctly', async () =>{
+    it('Should call userRepository.findOneBy() correctly', async () => {
       jest.spyOn(repository, 'findOneBy');
 
       await service.findOne(1);
@@ -91,28 +92,29 @@ describe('UsersService', () => {
       expect(repository.findOneBy).toHaveBeenCalledWith({ id: 1 });
     });
 
-    it('Should return a record correctly', async () =>{
-      jest.spyOn(repository, 'findOneBy')
+    it('Should return a record correctly', async () => {
+      jest.spyOn(repository, 'findOneBy');
 
       const result = await service.findOne(1);
 
       expect(result).toBe(userDataMock[0]);
     });
 
-    it('When record doesn\'t exists, should return an error', async () =>{
-      jest.spyOn(repository, 'findOneBy')
-      .mockReturnValueOnce(Promise.resolve(null))
+    it("When record doesn't exists, should return an error", async () => {
+      jest
+        .spyOn(repository, 'findOneBy')
+        .mockReturnValueOnce(Promise.resolve(null));
 
-      try{
+      try {
         await service.findOne(1);
       } catch (error) {
-        expect(error).toBeInstanceOf(HttpException)
+        expect(error).toBeInstanceOf(HttpException);
       }
     });
   });
 
   describe('update()', () => {
-    it('when not id param, should throw an error.', async () =>{
+    it('when not id param, should throw an error.', async () => {
       const updateUserDtoMock: UpdateUserDto = { name: 'First user' };
 
       try {
@@ -123,7 +125,7 @@ describe('UsersService', () => {
       }
     });
 
-    it('should call userRepository.save() correctly.', async () =>{
+    it('should call userRepository.save() correctly.', async () => {
       const updateUserDtoMock: UpdateUserDto = { name: 'First user' };
       jest.spyOn(repository, 'save');
 
@@ -132,11 +134,15 @@ describe('UsersService', () => {
       expect(repository.save).toHaveBeenCalledWith(updateUserDtoMock);
     });
 
-    it('should return the updated record correctly.', async () =>{
+    it('should return the updated record correctly.', async () => {
       const plantRecordMock: User = new User();
       const updateUserDtoMock: UpdateUserDto = { name: 'First user' };
-      const updatedPlantRecordMock: User = Object.assign(plantRecordMock, updateUserDtoMock);
-      jest.spyOn(repository, 'save')
+      const updatedPlantRecordMock: User = Object.assign(
+        plantRecordMock,
+        updateUserDtoMock,
+      );
+      jest
+        .spyOn(repository, 'save')
         .mockReturnValueOnce(Promise.resolve(updatedPlantRecordMock));
 
       const result = await service.update(1, updatedPlantRecordMock);
@@ -144,22 +150,23 @@ describe('UsersService', () => {
       expect(result).toBe(updatedPlantRecordMock);
     });
 
-    it('when userRepository.save fails, should throw an error', async () =>{
+    it('when userRepository.save fails, should throw an error', async () => {
       const plantRecordMock = new User();
-      jest.spyOn(repository, 'save')
-      .mockImplementationOnce(() => {throw new Error('Save error reason')});
+      jest.spyOn(repository, 'save').mockImplementationOnce(() => {
+        throw new Error('Save error reason');
+      });
 
       try {
         await service.update(1, new UpdateUserDto());
       } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        expect(error.message).toBe('update error: Save error reason')
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('update error: Save error reason');
       }
     });
   });
 
   describe('delete()', () => {
-    it('when not id param, should throw an error.', async () =>{
+    it('when not id param, should throw an error.', async () => {
       try {
         // @ts-ignore
         await service.remove();
@@ -168,27 +175,28 @@ describe('UsersService', () => {
       }
     });
 
-    it('should call userRepository.delete() correctly.', async () =>{
-     await service.remove(1);
+    it('should call userRepository.delete() correctly.', async () => {
+      await service.remove(1);
 
       expect(repository.remove).toHaveBeenCalledWith(userDataMock[0]);
     });
 
-    it('should return the updated record correctly.', async () =>{
-      const result: User |undefined = await service.remove(1);
+    it('should return the updated record correctly.', async () => {
+      const result: User | undefined = await service.remove(1);
 
       expect(result).toBe(userDataMock[0]);
     });
 
-    it('when userRepository.delete fails, should throw an error', async () =>{
-      jest.spyOn(repository, 'findOneBy')
-      .mockImplementationOnce(() => {throw new Error('Delete error reason')});
+    it('when userRepository.delete fails, should throw an error', async () => {
+      jest.spyOn(repository, 'findOneBy').mockImplementationOnce(() => {
+        throw new Error('Delete error reason');
+      });
 
       try {
         await service.remove(1);
       } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        expect(error.message).toBe('delete error: Delete error reason')
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('delete error: Delete error reason');
       }
     });
   });

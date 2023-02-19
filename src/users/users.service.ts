@@ -51,7 +51,7 @@ export class UsersService {
       const foundRecord = await this.userRepository.findOneBy({ id });
       if (!foundRecord)
         throw new HttpException(
-          `Error during update, item not found => id: ${id}}`,
+          `Error during update, item not found => id: ${id}`,
           HttpStatus.BAD_REQUEST,
         );
       return this.userRepository.save(Object.assign(updateUserDto, { id }));

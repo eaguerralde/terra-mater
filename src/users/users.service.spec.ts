@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -100,16 +99,14 @@ describe('UsersService', () => {
       expect(result).toBe(userDataMock[0]);
     });
 
-    it("When record doesn't exists, should return an error", async () => {
+    it("When record doesn't exists, should return an empty body", async () => {
       jest
         .spyOn(repository, 'findOneBy')
-        .mockReturnValueOnce(Promise.resolve(null));
-
-      try {
-        await service.findOne(1);
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException);
-      }
+        .mockReturnValueOnce(Promise.resolve(undefined));
+        
+        const result = await service.findOne(1);
+      
+        expect(result).toBe(undefined);
     });
   });
 

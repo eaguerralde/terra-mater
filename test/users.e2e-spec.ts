@@ -152,7 +152,7 @@ describe('AppController (e2e)', () => {
         .expect(400);
 
         expect(body).toStrictEqual({
-          message: 'update error: Error during update, item not found => id: 1}',
+          message: 'update error: Error during update, item not found => id: 1',
           statusCode: 400,
         });
     }); 

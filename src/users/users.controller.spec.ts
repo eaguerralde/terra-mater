@@ -2,7 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { CreateUserDto, UpdateUserDto, UpdateUserParamsDto } from './dto/';
+import {
+  CreateUserDto,
+  FindOneUserParamsDto,
+  UpdateUserDto,
+  UpdateUserParamsDto,
+} from './dto/';
 
 const userDataMock: User[] = [
   Object.assign(new User(), { id: 1, name: 'First user' }),
@@ -100,7 +105,11 @@ describe('UsersController', () => {
   describe('update', () => {
     it('should call usersService.findAll correctly', async () => {
       const userDataUpdateMock: UpdateUserDto = new UpdateUserDto();
-      await controller.update('1', userDataUpdateMock);
+      const params: FindOneUserParamsDto = {
+        ...new FindOneUserParamsDto(),
+        id: 1,
+      };
+      await controller.update(params, userDataUpdateMock);
 
       expect(service.update).toHaveBeenCalledTimes(1);
       expect(service.update).toHaveBeenCalledWith(1, userDataUpdateMock);
@@ -108,8 +117,12 @@ describe('UsersController', () => {
 
     it('should return the updated User correctly', async () => {
       const userDataUpdateMock: UpdateUserDto = new UpdateUserDto();
+      const params: FindOneUserParamsDto = {
+        ...new FindOneUserParamsDto(),
+        id: 1,
+      };
       const result: User | undefined = await controller.update(
-        '1',
+        params,
         userDataUpdateMock,
       );
 

@@ -54,7 +54,9 @@ export class UsersService {
           `Error during update, item not found => id: ${id}`,
           HttpStatus.BAD_REQUEST,
         );
-      return this.userRepository.save(Object.assign(updateUserDto, { id }));
+      return this.userRepository.save(
+        Object.assign(foundRecord, updateUserDto),
+      );
     } catch (ex) {
       throw new HttpException(
         `update error: ${ex.message}`,

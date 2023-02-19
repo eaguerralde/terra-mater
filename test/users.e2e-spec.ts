@@ -38,8 +38,7 @@ describe('AppController (e2e)', () => {
         }),
         AppModule,
       ],
-    })
-      .compile();
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -63,7 +62,7 @@ describe('AppController (e2e)', () => {
         .send(userMock)
         .expect(201);
       const userRecords = await repository.query(`SELECT * FROM user;`);
-      
+
       expect(body.name).toBe(userMock.name);
       expect(body.password).toBe(userMock.password);
       expect(userRecords.length).toBe(1);
@@ -78,22 +77,22 @@ describe('AppController (e2e)', () => {
         .send(userMock)
         .expect(400);
       const userRecords = await repository.query(`SELECT * FROM user;`);
-      
+
       expect(body).toStrictEqual({
-        message: 'create error: Field \'password\' doesn\'t have a default value', 
-        statusCode: 400
+        message: "create error: Field 'password' doesn't have a default value",
+        statusCode: 400,
       });
       expect(userRecords.length).toBe(0);
-    }); 
+    });
   });
 
   describe('/ (GET)', () => {
     it('Should return an array of users', async () => {
       const usersMock = [
         { name: 'user 1', password: '123' },
-        { name: 'user 2', password: '456' }
+        { name: 'user 2', password: '456' },
       ];
-      await repository.save(usersMock)
+      await repository.save(usersMock);
 
       const { body } = await request(app.getHttpServer())
         .get('/users')
@@ -104,13 +103,13 @@ describe('AppController (e2e)', () => {
       expect(body[0].password).toBe(usersMock[0].password);
       expect(body[1].name).toBe(usersMock[1].name);
       expect(body[1].password).toBe(usersMock[1].password);
-    }); 
+    });
   });
 
   describe('/:id (GET)', () => {
     it('Should return the correct user', async () => {
       const userMock = { name: 'user 1', password: '123' };
-      const newUser = await repository.save(userMock)
+      const newUser = await repository.save(userMock);
 
       const { body } = await request(app.getHttpServer())
         .get(`/users/${newUser.id}`)
@@ -119,15 +118,15 @@ describe('AppController (e2e)', () => {
       expect(body.id).toBe(newUser.id);
       expect(body.name).toBe(userMock.name);
       expect(body.password).toBe(userMock.password);
-    }); 
+    });
 
-    it('When user ID doesn\'t exist, should return an empty body', async () => {
+    it("When user ID doesn't exist, should return an empty body", async () => {
       const { body } = await request(app.getHttpServer())
         .get('/users/1')
         .expect(200);
 
-        expect(body).toStrictEqual({});
-    }); 
+      expect(body).toStrictEqual({});
+    });
   });
 
   describe('/:id (PATCH)', () => {
@@ -144,18 +143,18 @@ describe('AppController (e2e)', () => {
       expect(body.id).toBe(newUser.id);
       expect(body.name).toBe(updatedUserMock.name);
       expect(body.password).toBe(updatedUserMock.password);
-    }); 
+    });
 
-    it('When user ID doesn\'t exist, should return an update error', async () => {
+    it("When user ID doesn't exist, should return an update error", async () => {
       const { body } = await request(app.getHttpServer())
         .patch('/users/1')
         .expect(400);
 
-        expect(body).toStrictEqual({
-          message: 'update error: Error during update, item not found => id: 1',
-          statusCode: 400,
-        });
-    }); 
+      expect(body).toStrictEqual({
+        message: 'update error: Error during update, item not found => id: 1',
+        statusCode: 400,
+      });
+    });
   });
 
   describe('/:id (DELETE)', () => {
@@ -170,17 +169,17 @@ describe('AppController (e2e)', () => {
       expect(body.id).toBe(undefined);
       expect(body.name).toBe(userMock.name);
       expect(body.password).toBe(userMock.password);
-    }); 
+    });
 
-    it('When user ID doesn\'t exist, should return an update error', async () => {
+    it("When user ID doesn't exist, should return an update error", async () => {
       const { body } = await request(app.getHttpServer())
         .delete('/users/1')
         .expect(400);
 
-        expect(body).toStrictEqual({
-          message: 'delete error: Error during remove, item not found => id: 1',
-          statusCode: 400,
-        });
-    }); 
+      expect(body).toStrictEqual({
+        message: 'delete error: Error during remove, item not found => id: 1',
+        statusCode: 400,
+      });
+    });
   });
 });

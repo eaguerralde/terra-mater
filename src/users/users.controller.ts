@@ -15,7 +15,7 @@ import {
   FindOneUserParamsDto,
   DeleteUserParamsDto,
 } from './dto';
-import { ApiExceptionResponse } from 'src/common/dto/api-exception-response.dto';
+import { ApiExceptionResponse } from '../common/dto/api-exception-response.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -43,7 +43,7 @@ export class UsersController {
     type: ApiExceptionResponse,
   })
   @Get(':id')
-  findOne(@Param('id') findOneUserDto: FindOneUserParamsDto) {
+  findOne(@Param() findOneUserDto: FindOneUserParamsDto) {
     return this.usersService.findOne(findOneUserDto.id);
   }
 
@@ -54,10 +54,10 @@ export class UsersController {
   })
   @Patch(':id')
   update(
-    @Param('id') id: FindOneUserParamsDto,
+    @Param() params: FindOneUserParamsDto,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(params.id, updateUserDto);
   }
 
   @ApiResponse({

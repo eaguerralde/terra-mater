@@ -64,11 +64,17 @@ describe('UsersService', () => {
 
       await service.create({ name: 'New User', password: '789' });
 
-      expect(repository.save).toHaveBeenCalledWith({ name: 'New User', password: '789' });
+      expect(repository.save).toHaveBeenCalledWith({
+        name: 'New User',
+        password: '789',
+      });
     });
 
     it('should return a record correctly', async () => {
-      const result = await service.create({ name: 'New User', password: '789' });
+      const result = await service.create({
+        name: 'New User',
+        password: '789',
+      });
 
       expect(result).toBe(userDataMock[0]);
     });
@@ -103,10 +109,10 @@ describe('UsersService', () => {
       jest
         .spyOn(repository, 'findOneBy')
         .mockReturnValueOnce(Promise.resolve(undefined));
-        
-        const result = await service.findOne(1);
-      
-        expect(result).toBe(undefined);
+
+      const result = await service.findOne(1);
+
+      expect(result).toBe(undefined);
     });
   });
 
@@ -123,12 +129,16 @@ describe('UsersService', () => {
     });
 
     it('should call userRepository.save() correctly.', async () => {
-      const updateUserDtoMock: UpdateUserDto = { name: 'First user' };
+      const updateUserDtoMock: UpdateUserDto = { name: 'First user updated' };
+      const repositoryCallParams = Object.assign(
+        userDataMock[0],
+        updateUserDtoMock,
+      );
       jest.spyOn(repository, 'save');
 
       await service.update(1, updateUserDtoMock);
 
-      expect(repository.save).toHaveBeenCalledWith(updateUserDtoMock);
+      expect(repository.save).toHaveBeenCalledWith(repositoryCallParams);
     });
 
     it('should return the updated record correctly.', async () => {

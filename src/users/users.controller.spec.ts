@@ -89,7 +89,7 @@ describe('UsersController', () => {
       expect(result).toEqual(userDataMock[0]);
     });
 
-    it('when user ID doesn\'t exist, should return undefined', async () => {
+    it("when user ID doesn't exist, should return undefined", async () => {
       jest.spyOn(service, 'findOne').mockResolvedValueOnce(undefined);
       const result = await controller.findOne({ id: 3 });
 

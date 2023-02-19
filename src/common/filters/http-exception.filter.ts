@@ -5,6 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ApiExceptionResponse } from '../dto/api-exception-response.dto';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,13 +15,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const exceptionResponse: any = exception.getResponse();
-
-    response.status(status).json({
+    const apiResponse: ApiExceptionResponse = {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
       type: exception.name,
       message: exceptionResponse.message || exception.message,
-    });
+    };
+
+    response.status(status).json(apiResponse);
   }
 }

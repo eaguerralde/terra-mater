@@ -9,8 +9,8 @@ import { UsersService } from './users.service';
 
 const USER_REPOSITORY_TOKEN = getRepositoryToken(User);
 const userDataMock: User[] = [
-  Object.assign(new User(), { id: 1, name: 'First user' }),
-  Object.assign(new User(), { id: 2, name: 'Second user' }),
+  Object.assign(new User(), { id: 1, name: 'First user', password: '123' }),
+  Object.assign(new User(), { id: 2, name: 'Second user', password: '456' }),
 ];
 
 describe('UsersService', () => {
@@ -53,7 +53,7 @@ describe('UsersService', () => {
       });
 
       try {
-        await service.create({ name: 'New User' });
+        await service.create({ name: 'New User', password: '789' });
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
         expect(error.message).toBe('create error: Save error reason');
@@ -63,13 +63,13 @@ describe('UsersService', () => {
     it('should call userRepository.save() correctly', async () => {
       jest.spyOn(repository, 'save');
 
-      await service.create({ name: 'New User' });
+      await service.create({ name: 'New User', password: '789' });
 
-      expect(repository.save).toHaveBeenCalledWith({ name: 'New User' });
+      expect(repository.save).toHaveBeenCalledWith({ name: 'New User', password: '789' });
     });
 
     it('should return a record correctly', async () => {
-      const result = await service.create({ name: 'New User' });
+      const result = await service.create({ name: 'New User', password: '789' });
 
       expect(result).toBe(userDataMock[0]);
     });

@@ -2,8 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto, UpdateUserParamsDto } from './dto/';
 
 const userDataMock: User[] = [
   Object.assign(new User(), { id: 1, name: 'First user' }),
@@ -78,14 +77,14 @@ describe('UsersController', () => {
 
   describe('findOne', () => {
     it('should call usersService.findAll correctly', async () => {
-      await controller.findOne('1');
+      await controller.findOne({ id: 1 });
 
       expect(service.findOne).toHaveBeenCalledTimes(1);
       expect(service.findOne).toHaveBeenCalledWith(1);
     });
 
     it('should return the found User correctly', async () => {
-      const result = await controller.findOne('1');
+      const result = await controller.findOne({ id: 1 });
 
       expect(result).toEqual(userDataMock[0]);
     });
@@ -113,15 +112,14 @@ describe('UsersController', () => {
 
   describe('delete', () => {
     it('should call usersService.delete correctly', async () => {
-      await controller.remove('1');
+      await controller.remove({ id: 1 });
 
       expect(service.remove).toHaveBeenCalledTimes(1);
       expect(service.remove).toHaveBeenCalledWith(1);
     });
 
     it('should return the deleted User correctly', async () => {
-      const userDataUpdateMock: UpdateUserDto = new UpdateUserDto();
-      const result: User | undefined = await controller.remove('1');
+      const result: User | undefined = await controller.remove({ id: 1 });
 
       expect(result).toEqual(userDataMock[0]);
     });

@@ -8,6 +8,9 @@ export class User {
   @Column()
   public name: string;
 
+  @Column()
+  public password: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created: Date;
 

@@ -1,49 +1,21 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { UsersModule } from '../src/users/users.module';
-import { User } from '../src/users/entities/user.entity';
-import { UsersController } from '../src/users/users.controller';
-import { UsersService } from '../src/users/users.service';
-import { AppModule } from '../src/app.module';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { default as dbConfig } from './config/db';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../../src/users/entities/user.entity';
+import { testingAppModuleFactory } from '../helpers/app-fixture'
 
-describe('AppController (e2e)', () => {
+describe('UsersModule', () => {
+  const routePrefix = '/users';
   let app: INestApplication;
   let repository: Repository<User>;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          load: [dbConfig],
-        }),
-        TypeOrmModule.forRootAsync({
-          imports: [ConfigModule],
-          useFactory: (configService: ConfigService) => ({
-            type: 'mysql',
-            host: configService.get('db.host'),
-            port: configService.get('db.port'),
-            username: configService.get('db.username'),
-            password: configService.get('db.password'),
-            database: configService.get('db.name'),
-            autoLoadEntities: true,
-            synchronize: true,
-          }),
-          inject: [ConfigService],
-        }),
-        AppModule,
-      ],
-    }).compile();
-
+    const moduleFixture: TestingModule = await testingAppModuleFactory();
     app = moduleFixture.createNestApplication();
     await app.init();
-    const USER_REPOSITORY_TOKEN = getRepositoryToken(User);
-    repository = app.get(USER_REPOSITORY_TOKEN);
+    repository = app.get(getRepositoryToken(User));
   });
 
   afterAll(async () => {
@@ -58,7 +30,7 @@ describe('AppController (e2e)', () => {
     it('Should create and return a user', async () => {
       const userMock = { name: 'user 1', password: '123' };
       const { body } = await request(app.getHttpServer())
-        .post('/users')
+        .post(routePrefix)
         .send(userMock)
         .expect(201);
       const userRecords = await repository.query(`SELECT * FROM user;`);
@@ -73,7 +45,7 @@ describe('AppController (e2e)', () => {
     it('when using wrong payload, should return an error', async () => {
       const userMock = { name: 'user 1' };
       const { body } = await request(app.getHttpServer())
-        .post('/users')
+        .post(routePrefix)
         .send(userMock)
         .expect(400);
       const userRecords = await repository.query(`SELECT * FROM user;`);
@@ -95,7 +67,7 @@ describe('AppController (e2e)', () => {
       await repository.save(usersMock);
 
       const { body } = await request(app.getHttpServer())
-        .get('/users')
+        .get(routePrefix)
         .expect(200);
 
       expect(body.length).toBe(2);
@@ -112,7 +84,7 @@ describe('AppController (e2e)', () => {
       const newUser = await repository.save(userMock);
 
       const { body } = await request(app.getHttpServer())
-        .get(`/users/${newUser.id}`)
+        .get(`${routePrefix}/${newUser.id}`)
         .expect(200);
 
       expect(body.id).toBe(newUser.id);
@@ -122,7 +94,7 @@ describe('AppController (e2e)', () => {
 
     it("When user ID doesn't exist, should return an empty body", async () => {
       const { body } = await request(app.getHttpServer())
-        .get('/users/1')
+        .get(routePrefix + '/1')
         .expect(200);
 
       expect(body).toStrictEqual({});
@@ -136,7 +108,7 @@ describe('AppController (e2e)', () => {
       const newUser = await repository.save(userMock);
 
       const { body } = await request(app.getHttpServer())
-        .patch(`/users/${newUser.id}`)
+        .patch(`${routePrefix}/${newUser.id}`)
         .send(updatedUserMock)
         .expect(200);
 
@@ -163,7 +135,7 @@ describe('AppController (e2e)', () => {
       const userToDelete = await repository.save(userMock);
 
       const { body } = await request(app.getHttpServer())
-        .delete(`/users/${userToDelete.id}`)
+        .delete(`${routePrefix}/${userToDelete.id}`)
         .expect(200);
 
       expect(body.id).toBe(undefined);
@@ -173,7 +145,7 @@ describe('AppController (e2e)', () => {
 
     it("When user ID doesn't exist, should return an update error", async () => {
       const { body } = await request(app.getHttpServer())
-        .delete('/users/1')
+        .delete(routePrefix + '/1')
         .expect(400);
 
       expect(body).toStrictEqual({

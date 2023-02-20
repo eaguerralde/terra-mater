@@ -2,12 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import {
-  CreateUserDto,
-  FindOneUserParamsDto,
-  UpdateUserDto,
-  UpdateUserParamsDto,
-} from './dto/';
+import { CreateUserDto, FindOneUserParamsDto, UpdateUserDto } from './dto/';
 
 const userDataMock: User[] = [
   Object.assign(new User(), { id: 1, name: 'First user' }),

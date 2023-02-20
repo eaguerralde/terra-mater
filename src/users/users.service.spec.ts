@@ -116,6 +116,34 @@ describe('UsersService', () => {
     });
   });
 
+  describe('findOneByName()', () => {
+    it('Should call userRepository.findOneBy() correctly', async () => {
+      jest.spyOn(repository, 'findOneBy');
+
+      await service.findOneByName('First user');
+
+      expect(repository.findOneBy).toHaveBeenCalledWith({ name: 'First user' });
+    });
+
+    it('Should return a record correctly', async () => {
+      jest.spyOn(repository, 'findOneBy');
+
+      const result = await service.findOneByName('First user');
+
+      expect(result).toBe(userDataMock[0]);
+    });
+
+    it("When record doesn't exists, should return an empty body", async () => {
+      jest
+        .spyOn(repository, 'findOneBy')
+        .mockReturnValueOnce(Promise.resolve(undefined));
+
+      const result = await service.findOneByName('First user');
+
+      expect(result).toBe(undefined);
+    });
+  });
+
   describe('update()', () => {
     it('when not id param, should throw an error.', async () => {
       const updateUserDtoMock: UpdateUserDto = { name: 'First user' };

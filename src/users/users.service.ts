@@ -45,6 +45,17 @@ export class UsersService {
     }
   }
 
+  public async findOneByName(name: string): Promise<User> {
+    try {
+      return this.userRepository.findOneBy({ name });
+    } catch (ex) {
+      throw new HttpException(
+        `findOne error: ${ex.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   public async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     if (!id) throw new Error(`update error: id is empty`);
     try {

@@ -35,11 +35,7 @@ describe('AuthModule', () => {
         .post(routePrefix + '/login')
         .send(loginDataMock)
         .expect(201);
-      // result has all user properties except `password`
-      const { password, ...expectedResult } = userRecord;
-      expect(JSON.parse(JSON.stringify(body))).toEqual(
-        JSON.parse(JSON.stringify(expectedResult)),
-      );
+      expect(typeof body.access_token).toBe('string');
     });
 
     it('when using wrong credentials, should login and return a user', async () => {

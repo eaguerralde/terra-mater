@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { AuthUser } from './types/auth-user.type';
 import { UsersService } from '../users/users.service';
+import { AuthToken } from './types/auth-token.type';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService
+  ) {}
 
   async validateUser(
     username: string,
@@ -17,5 +22,12 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  getToken(user: any): AuthToken {
+    const payload = { username: user.username, sub: user.userId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

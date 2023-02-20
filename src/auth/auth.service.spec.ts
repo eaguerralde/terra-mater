@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -27,6 +28,7 @@ describe('AuthService', () => {
             remove: jest.fn(() => Promise.resolve(userDataMock[0])),
           }),
         },
+        JwtService,
       ],
     }).compile();
 

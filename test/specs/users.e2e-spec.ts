@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../src/users/entities/user.entity';
-import { testingAppModuleFactory } from '../helpers/app-fixture'
+import { testingAppModuleFactory } from '../helpers/app-fixture';
 
 describe('UsersModule', () => {
   const routePrefix = '/users';

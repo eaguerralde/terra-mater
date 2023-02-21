@@ -37,15 +37,8 @@ describe('UsersModule', () => {
   describe('/ (POST)', () => {
     it('Should create and return a user', async () => {
       const userMock = { name: 'user 1', password: '123' };
-      await repository.save(userMock);
-      const loginResponse = await loginUser(
-        app,
-        userMock.name,
-        userMock.password,
-      );
       const { body } = await request(app.getHttpServer())
         .post(routePrefix)
-        .set('Authorization', 'Bearer ' + loginResponse.access_token)
         .send(userMock)
         .expect(201);
       const userRecords = await repository.query(`SELECT * FROM user;`);
@@ -58,17 +51,9 @@ describe('UsersModule', () => {
     });
 
     it('when using wrong payload, should return an error', async () => {
-      const userDummy = { name: 'user 1', password: '123' };
-      await repository.save(userDummy);
-      const loginResponse = await loginUser(
-        app,
-        userDummy.name,
-        userDummy.password,
-      );
       const userMock = { name: 'user 1' };
       const { body } = await request(app.getHttpServer())
         .post(routePrefix)
-        .set('Authorization', 'Bearer ' + loginResponse.access_token)
         .send(userMock)
         .expect(400);
       const userRecords = await repository.query(`SELECT * FROM user;`);
@@ -77,7 +62,7 @@ describe('UsersModule', () => {
         message: "create error: Field 'password' doesn't have a default value",
         statusCode: 400,
       });
-      expect(userRecords.length).toBe(1);
+      expect(userRecords.length).toBe(0);
     });
   });
 

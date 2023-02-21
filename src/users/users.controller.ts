@@ -17,14 +17,14 @@ import {
   DeleteUserParamsDto,
 } from './dto';
 import { ApiExceptionResponse } from '../common/dto/api-exception-response.dto';
-import { JwtAuthGuard } from '../../src/auth/guards/jwt-auth.guard';
+import { PublicRoute } from '../common/decorators/public-route.decorator';
 
-@UseGuards(JwtAuthGuard)
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @PublicRoute()
   @ApiResponse({
     status: 400,
     description: 'Bad request.',

@@ -9,7 +9,7 @@ import { AuthToken } from './types/auth-token.type';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async validateUser(
@@ -24,10 +24,12 @@ export class AuthService {
     return null;
   }
 
-  getToken(user: any): AuthToken {
-    const payload = { username: user.username, sub: user.userId };
+  getToken(user: AuthUser): AuthToken {
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign({
+        userName: user.name,
+        userId: user.id,
+      }),
     };
   }
 }

@@ -1,1 +1,1 @@
-export type AuthToken = { access_token: string; }
+export type AuthToken = { access_token: string };

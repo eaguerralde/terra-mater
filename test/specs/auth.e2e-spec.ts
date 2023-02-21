@@ -30,7 +30,7 @@ describe('AuthModule', () => {
     it('should login and return a user', async () => {
       const userDataMock = { name: 'login user', password: '123' };
       const loginDataMock = { ...userDataMock, username: userDataMock.name };
-      const userRecord = await repository.save(userDataMock);
+      await repository.save(userDataMock);
       const { body } = await request(app.getHttpServer())
         .post(routePrefix + '/login')
         .send(loginDataMock)
@@ -38,7 +38,7 @@ describe('AuthModule', () => {
       expect(typeof body.access_token).toBe('string');
     });
 
-    it('when using wrong credentials, should login and return a user', async () => {
+    it('when using wrong credentials, should return Unauthorized HTTP status', async () => {
       const userDataMock = { name: 'login user', password: '123' };
       const loginDataMock = {
         username: userDataMock.name,

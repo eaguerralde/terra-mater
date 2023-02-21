@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -16,7 +17,9 @@ import {
   DeleteUserParamsDto,
 } from './dto';
 import { ApiExceptionResponse } from '../common/dto/api-exception-response.dto';
+import { JwtAuthGuard } from '../../src/auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @ApiTags('users')
 @Controller('users')
 export class UsersController {

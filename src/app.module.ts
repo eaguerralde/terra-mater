@@ -8,6 +8,7 @@ import { default as dbConfig } from './config/db';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     UsersModule,
     AuthModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [

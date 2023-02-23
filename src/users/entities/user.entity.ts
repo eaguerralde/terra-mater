@@ -24,6 +24,13 @@ export class User {
   public password: string;
 
   /**
+   * Whether user is admin
+   * @example false
+   */
+  @Column({ type: 'bool', default: false })
+  public isAdmin: boolean = false;
+
+  /**
    * User creation timestamp
    * @example '2023-02-17T10:20:01.000Z'
    */

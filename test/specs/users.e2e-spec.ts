@@ -69,7 +69,7 @@ describe('UsersModule', () => {
   describe('/ (GET)', () => {
     it('Should return an array of users', async () => {
       const usersMock = [
-        { name: 'user 1', password: '123' },
+        { name: 'user 1', password: '123', isAdmin: true },
         { name: 'user 2', password: '456' },
       ];
       await repository.save(usersMock);
@@ -93,7 +93,7 @@ describe('UsersModule', () => {
 
   describe('/:id (GET)', () => {
     it('Should return the correct user', async () => {
-      const userMock = { name: 'user 1', password: '123' };
+      const userMock = { name: 'user 1', password: '123', isAdmin: true };
       const newUser = await repository.save(userMock);
       const loginResponse = await loginUser(
         app,
@@ -111,7 +111,7 @@ describe('UsersModule', () => {
     });
 
     it("When user ID doesn't exist, should return an empty body", async () => {
-      const userMock = { name: 'user 1', password: '123' };
+      const userMock = { name: 'user 1', password: '123', isAdmin: true };
       await repository.save(userMock);
       const loginResponse = await loginUser(
         app,
@@ -149,7 +149,7 @@ describe('UsersModule', () => {
     });
 
     it("When user ID doesn't exist, should return an update error", async () => {
-      const dummyUser = { name: 'user 1', password: '123' };
+      const dummyUser = { name: 'user 1', password: '123', isAdmin: true };
       await repository.save(dummyUser);
       const loginResponse = await loginUser(
         app,
@@ -161,7 +161,7 @@ describe('UsersModule', () => {
         .set('Authorization', 'Bearer ' + loginResponse.access_token)
         .expect(400);
       expect(body).toStrictEqual({
-        message: 'update error: Error during update, item not found => id: 0',
+        message: 'update error: item not found => id: 0',
         statusCode: 400,
       });
     });
@@ -186,7 +186,7 @@ describe('UsersModule', () => {
     });
 
     it("When user ID doesn't exist, should return an update error", async () => {
-      const dummyUser = { name: 'user 1', password: '123' };
+      const dummyUser = { name: 'user 1', password: '123', isAdmin: true };
       await repository.save(dummyUser);
       const loginResponse = await loginUser(
         app,

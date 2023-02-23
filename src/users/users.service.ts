@@ -12,7 +12,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  public async create(createUserDto: CreateUserDto): Promise<User> {
+  public async create(createUserDto: CreateUserDto, user): Promise<User> {
     try {
       return await this.userRepository.save(createUserDto);
     } catch (ex) {
@@ -23,7 +23,7 @@ export class UsersService {
     }
   }
 
-  public async findAll(): Promise<User[]> {
+  public async findAll(user): Promise<User[]> {
     try {
       return await this.userRepository.find();
     } catch (ex) {
@@ -36,7 +36,7 @@ export class UsersService {
 
   public async findOne(id: number): Promise<User> {
     try {
-      return this.userRepository.findOneBy({ id });
+      return await this.userRepository.findOneBy({ id });
     } catch (ex) {
       throw new HttpException(
         `findOne error: ${ex.message}`,
@@ -59,14 +59,14 @@ export class UsersService {
   public async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     if (!id) throw new Error(`update error: id is empty`);
     try {
-      const foundRecord = await this.userRepository.findOneBy({ id });
-      if (!foundRecord)
+      const userToUpdate = await this.userRepository.findOneBy({ id });
+      if (!userToUpdate)
         throw new HttpException(
-          `Error during update, item not found => id: ${id}`,
+          `item not found => id: ${id}`,
           HttpStatus.BAD_REQUEST,
         );
       return this.userRepository.save(
-        Object.assign(foundRecord, updateUserDto),
+        Object.assign(userToUpdate, updateUserDto),
       );
     } catch (ex) {
       throw new HttpException(
@@ -79,13 +79,13 @@ export class UsersService {
   public async remove(id: number): Promise<User> {
     if (!id) throw new Error(`delete error: id is empty`);
     try {
-      const foundRecord = await this.userRepository.findOneBy({ id });
-      if (!foundRecord)
+      const userToDelete = await this.userRepository.findOneBy({ id });
+      if (!userToDelete)
         throw new HttpException(
-          `Error during remove, item not found => id: ${id}`,
+          `item not found => id: ${id}`,
           HttpStatus.BAD_REQUEST,
         );
-      return await this.userRepository.remove(foundRecord);
+      return await this.userRepository.remove(userToDelete);
     } catch (ex) {
       throw new HttpException(
         `delete error: ${ex.message}`,

@@ -12,7 +12,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  public async create(createUserDto: CreateUserDto, user): Promise<User> {
+  public async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       return await this.userRepository.save(createUserDto);
     } catch (ex) {
@@ -23,7 +23,7 @@ export class UsersService {
     }
   }
 
-  public async findAll(user): Promise<User[]> {
+  public async findAll(): Promise<User[]> {
     try {
       return await this.userRepository.find();
     } catch (ex) {

@@ -19,6 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    // User is added to controller's Request param
     const user: User = await this.usersService.findOne(payload.id);
     return user;
   }

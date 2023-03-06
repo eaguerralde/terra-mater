@@ -23,6 +23,7 @@ import { Ability } from '@casl/ability';
 import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
 import { Actions } from '../casl/enums/actions.enum';
 import { User } from './entities/user.entity';
+import { AuthRequest } from 'src/auth/types/auth-request.type';
 
 @ApiTags('users')
 @Controller('users')
@@ -41,16 +42,16 @@ export class UsersController {
   @Post()
   create(
     @Body() createUserDto: CreateUserDto,
-    @Request() req: Request & { user },
+    @Request() req: AuthRequest,
   ) {
-    return this.usersService.create(createUserDto, req.user);
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll(@Request() req: Request & { user: User }) {
+  findAll(@Request() req: AuthRequest) {
     const ability: Ability = this.caslAbilityFactory.createForUser(req.user);
     if (ability.cannot(Actions.Read, 'all')) throw new ForbiddenException();
-    return this.usersService.findAll(req.user);
+    return this.usersService.findAll();
   }
 
   @ApiResponse({
@@ -61,7 +62,7 @@ export class UsersController {
   @Get(':id')
   async findOne(
     @Param() findOneUserDto: FindOneUserParamsDto,
-    @Request() req: Request & { user: User },
+    @Request() req: AuthRequest,
   ) {
     const foundUser: User = await this.usersService.findOne(findOneUserDto.id);
     const ability: Ability = this.caslAbilityFactory.createForUser(req.user);
@@ -78,7 +79,7 @@ export class UsersController {
   async update(
     @Param() params: FindOneUserParamsDto,
     @Body() updateUserDto: UpdateUserDto,
-    @Request() req: Request & { user: User },
+    @Request() req: AuthRequest,
   ) {
     const userToUpdate = await this.usersService.findOne(params.id);
     const ability: Ability = this.caslAbilityFactory.createForUser(req.user);
@@ -95,11 +96,11 @@ export class UsersController {
   @Delete(':id')
   async remove(
     @Param() params: DeleteUserParamsDto,
-    @Request() req: Request & { user: User },
+    @Request() req: AuthRequest,
   ) {
     const userToDelete = await this.usersService.findOne(params.id);
     const ability: Ability = this.caslAbilityFactory.createForUser(req.user);
-    if (ability.cannot(Actions.Update, userToDelete))
+    if (ability.cannot(Actions.Delete, userToDelete))
       throw new ForbiddenException();
     return this.usersService.remove(params.id);
   }

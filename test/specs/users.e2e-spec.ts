@@ -199,7 +199,7 @@ describe('UsersModule', () => {
         .expect(400);
 
       expect(body).toStrictEqual({
-        message: 'delete error: Error during remove, item not found => id: 0',
+        message: 'delete error: item not found => id: 0',
         statusCode: 400,
       });
     });

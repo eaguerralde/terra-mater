@@ -46,7 +46,6 @@ describe('UsersService', () => {
 
   describe('create()', () => {
     it('when repository.save fails, should throw an error', async () => {
-      const plantData = new CreateUserDto();
       jest.spyOn(repository, 'save').mockImplementationOnce(() => {
         throw new Error('Save error reason');
       });
@@ -61,7 +60,6 @@ describe('UsersService', () => {
 
     it('should call userRepository.save() correctly', async () => {
       jest.spyOn(repository, 'save');
-
       await service.create({ name: 'New User', password: '789' });
 
       expect(repository.save).toHaveBeenCalledWith({
@@ -91,7 +89,6 @@ describe('UsersService', () => {
   describe('findOne()', () => {
     it('Should call userRepository.findOneBy() correctly', async () => {
       jest.spyOn(repository, 'findOneBy');
-
       await service.findOne(1);
 
       expect(repository.findOneBy).toHaveBeenCalledWith({ id: 1 });
@@ -99,7 +96,6 @@ describe('UsersService', () => {
 
     it('Should return a record correctly', async () => {
       jest.spyOn(repository, 'findOneBy');
-
       const result = await service.findOne(1);
 
       expect(result).toBe(userDataMock[0]);
@@ -109,7 +105,6 @@ describe('UsersService', () => {
       jest
         .spyOn(repository, 'findOneBy')
         .mockReturnValueOnce(Promise.resolve(undefined));
-
       const result = await service.findOne(1);
 
       expect(result).toBe(undefined);
@@ -119,7 +114,6 @@ describe('UsersService', () => {
   describe('findOneByName()', () => {
     it('Should call userRepository.findOneBy() correctly', async () => {
       jest.spyOn(repository, 'findOneBy');
-
       await service.findOneByName('First user');
 
       expect(repository.findOneBy).toHaveBeenCalledWith({ name: 'First user' });
@@ -127,7 +121,6 @@ describe('UsersService', () => {
 
     it('Should return a record correctly', async () => {
       jest.spyOn(repository, 'findOneBy');
-
       const result = await service.findOneByName('First user');
 
       expect(result).toBe(userDataMock[0]);
@@ -137,7 +130,6 @@ describe('UsersService', () => {
       jest
         .spyOn(repository, 'findOneBy')
         .mockReturnValueOnce(Promise.resolve(undefined));
-
       const result = await service.findOneByName('First user');
 
       expect(result).toBe(undefined);

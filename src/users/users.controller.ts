@@ -40,10 +40,7 @@ export class UsersController {
     type: ApiExceptionResponse,
   })
   @Post()
-  create(
-    @Body() createUserDto: CreateUserDto,
-    @Request() req: AuthRequest,
-  ) {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 

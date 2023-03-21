@@ -51,6 +51,7 @@ $ yarn run test:cov
 - Automatic parameter validation pipe based on DTOs.
 - Exception handling pipe.
 - Simple users CRUD module.
+- Authorisation module using [casl](https://casl.js.org/)
 - Swagger documentation at `/docs' automatically generated from code and comments.
 - Environment config through .env file.
 - Unit and e2e tests with separate .env file.

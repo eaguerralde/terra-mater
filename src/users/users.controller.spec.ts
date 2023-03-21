@@ -36,7 +36,7 @@ describe('UsersController', () => {
         },
         {
           provide: Request,
-          useValue: {}
+          useValue: {},
         },
         CaslAbilityFactory,
       ],
@@ -60,7 +60,7 @@ describe('UsersController', () => {
   describe('create', () => {
     it('should call usersService.create correctly', async () => {
       const bodyMock: CreateUserDto = new CreateUserDto();
-      await controller.create(bodyMock, adminRequestMock);
+      await controller.create(bodyMock);
 
       expect(service.create).toHaveBeenCalledTimes(1);
       expect(service.create).toHaveBeenCalledWith(bodyMock);
@@ -68,7 +68,7 @@ describe('UsersController', () => {
 
     it('should return the newly created User correctly', async () => {
       const bodyMock: CreateUserDto = new CreateUserDto();
-      const result: User = await controller.create(bodyMock, adminRequestMock);
+      const result: User = await controller.create(bodyMock);
 
       expect(result).toEqual(userDataMock[0]);
     });
@@ -76,20 +76,22 @@ describe('UsersController', () => {
 
   describe('findAll', () => {
     it('should throw for standard users', async () => {
-      await expect(async () => { await controller.findAll(userRequestMock)}).rejects.toThrow('Forbidden');
+      await expect(async () => {
+        await controller.findAll(userRequestMock);
+      }).rejects.toThrow('Forbidden');
     });
 
     describe('when user is admin', () => {
       it('should call usersService.findAll correctly', async () => {
         await controller.findAll(adminRequestMock);
-  
+
         expect(service.findAll).toHaveBeenCalledTimes(1);
         expect(service.findAll).toHaveBeenCalledWith();
       });
-  
+
       it('should return an array with all User correctly', async () => {
         const result: User[] = await controller.findAll(adminRequestMock);
-  
+
         expect(result).toEqual(userDataMock);
       });
     });
@@ -126,7 +128,9 @@ describe('UsersController', () => {
       });
 
       it('when user searched is different than current user, should throw Forbidden', async () => {
-        await expect(async () => { await controller.findOne({ id: 1 }, userRequestMock)}).rejects.toThrow('Forbidden');
+        await expect(async () => {
+          await controller.findOne({ id: 1 }, userRequestMock);
+        }).rejects.toThrow('Forbidden');
       });
 
       it('when user searched is the current user, should return the found User correctly', async () => {
@@ -218,11 +222,9 @@ describe('UsersController', () => {
           id: 1,
         };
 
-        await expect(async () => { await controller.update(
-          params,
-          userDataUpdateMock,
-          userRequestMock,
-        )}).rejects.toThrow('Forbidden');
+        await expect(async () => {
+          await controller.update(params, userDataUpdateMock, userRequestMock);
+        }).rejects.toThrow('Forbidden');
       });
     });
   });
@@ -237,13 +239,19 @@ describe('UsersController', () => {
       });
 
       it('should return the deleted User correctly', async () => {
-        const result: User = await controller.remove({ id: 1 }, adminRequestMock);
+        const result: User = await controller.remove(
+          { id: 1 },
+          adminRequestMock,
+        );
 
         expect(result).toEqual(userDataMock[0]);
       });
 
       it('when deleted user is different than current, should return the deleted User correctly', async () => {
-        const result: User = await controller.remove({ id: 2 }, adminRequestMock);
+        const result: User = await controller.remove(
+          { id: 2 },
+          adminRequestMock,
+        );
 
         expect(result).toEqual(userDataMock[1]);
       });
@@ -258,19 +266,18 @@ describe('UsersController', () => {
       });
 
       it('should return the deleted User correctly', async () => {
-        const result: User = await controller.remove({ id: 2 }, userRequestMock);
+        const result: User = await controller.remove(
+          { id: 2 },
+          userRequestMock,
+        );
 
         expect(result).toEqual(userDataMock[1]);
       });
 
       it('when the deleted user is different than the current, should throw Forbiden error', async () => {
-        const userDataUpdateMock: UpdateUserDto = new UpdateUserDto();
-        const params: FindOneUserParamsDto = {
-          ...new FindOneUserParamsDto(),
-          id: 1,
-        };
-
-        await expect(async () => { await controller.remove({ id: 0 }, userRequestMock)}).rejects.toThrow('Forbidden');
+        await expect(async () => {
+          await controller.remove({ id: 0 }, userRequestMock);
+        }).rejects.toThrow('Forbidden');
       });
     });
   });

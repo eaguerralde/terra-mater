@@ -28,7 +28,7 @@ export class User {
    * @example false
    */
   @Column({ type: 'bool', default: false })
-  public isAdmin: boolean = false;
+  public isAdmin = false;
 
   /**
    * User creation timestamp

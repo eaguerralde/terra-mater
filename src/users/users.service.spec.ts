@@ -51,7 +51,10 @@ describe('UsersService', () => {
       });
 
       try {
-        await service.create({ name: 'New User', password: '789' });
+        await service.create({
+          name: 'New User',
+          password: '789',
+        } as CreateUserDto);
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
         expect(error.message).toBe('create error: Save error reason');
@@ -72,7 +75,7 @@ describe('UsersService', () => {
       const result = await service.create({
         name: 'New User',
         password: '789',
-      });
+      } as CreateUserDto);
 
       expect(result).toBe(userDataMock[0]);
     });
@@ -178,7 +181,6 @@ describe('UsersService', () => {
     });
 
     it('when userRepository.save fails, should throw an error', async () => {
-      const plantRecordMock = new User();
       jest.spyOn(repository, 'save').mockImplementationOnce(() => {
         throw new Error('Save error reason');
       });

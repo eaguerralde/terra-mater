@@ -1,21 +1,22 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
+import { testingAppModuleFactory } from '../helpers/app-fixture';
 
 describe('AppModule', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await testingAppModuleFactory();
     app = moduleFixture.createNestApplication();
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('/ (GET)', async () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
